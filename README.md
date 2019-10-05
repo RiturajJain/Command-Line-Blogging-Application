@@ -4,7 +4,19 @@ The *blog.sh* file can be run using *bash*. At first, it will check if *sqlite3*
 
     sudo apt install sqlite3
 
-It will then check if the database named **blogdata.db** exists or not. If it doesn't exist, it will create the database and two tables named **post** and **category**.
+It will then check if the database named **blogdata.db** exists or not. If it doesn't exist, it will create the database and two tables named **post** and **category** using below commands:
+
+    sqlite3 blogdata.db "CREATE TABLE category 
+			(cat_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+			 cat_name VARCHAR(30) NOT NULL);"
+
+    sqlite3 blogdata.db "CREATE TABLE post 
+			(post_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+			 title VARCHAR(100) NOT NULL, 
+			 content VARCHAR(1000) NOT NULL, 
+			 cat_id VARCHAR(30), 
+			 FOREIGN KEY(cat_id) REFERENCES category(cat_id) 
+			 ON DELETE SET NULL ON UPDATE CASCADE);"
 
 The user can then use following list of commands to interact with the application through terminal:
 

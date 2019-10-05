@@ -9,9 +9,9 @@ fi
 # Create Database "blogdata.db" and two tables "post" and "category"
 if [[ ! -e blogdata.db ]]
 then
-	sqlite3 blogdata.db "CREATE TABLE category (cat_id INTEGER primary key autoincrement not null, cat_name varchar(30) not null);"
+	sqlite3 blogdata.db "CREATE TABLE category (cat_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, cat_name VARCHAR(30) NOT NULL);"
 
-	sqlite3 blogdata.db "CREATE TABLE post (post_id INTEGER primary key autoincrement not null, title varchar(100) not null, content varchar(1000) not null, cat_id varchar(30), foreign key(cat_id) references category(cat_id) on delete no action on update no action);"
+	sqlite3 blogdata.db "CREATE TABLE post (post_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(100) NOT NULL, content VARCHAR(1000) NOT NULL, cat_id VARCHAR(30), FOREIGN KEY(cat_id) REFERENCES category(cat_id) ON DELETE SET NULL ON UPDATE CASCADE);"
 fi
 
 # regular expression to check if given argument is a positive integer
@@ -43,7 +43,10 @@ else
 			echo -e '\033[1m$ blog.sh category list\033[0m => List all current categories \n'
 			echo -e '\033[1m$ blog.sh category remove <cat_id>\033[0m => Remove category with given <cat_id> \n'
 			echo -e '\033[1m$ blog.sh category assign <post_id> <cat_id>\033[0m => Assign the specified category to a post \n'
-			echo -e '\033[1m$ blog.sh post add "title" "content" --category "cat-name"\033[0m => Add a new blog post with the specified title, content and assign a category to it. If the category doesn’t exist, it will first be created. \n';;
+			echo -e '\033[1m$ blog.sh post add "title" "content" --category "cat-name"\033[0m => Add a new blog post with the specified title, content and assign a category to it. If the category doesn’t exist, it will first be created. \n'
+			
+			;;
+		
 		
 		# Options for ./blog.sh post
 		"post")
@@ -144,6 +147,7 @@ else
 					fi
 					
 					echo ""
+					
 					;;
 					
 				# Update the title or content of post with given <post_id>
@@ -217,13 +221,15 @@ else
 						echo "Post with id=$3 deleted successfully"
 					fi
 					
-					echo "";;
+					echo ""
+					;;
 				
 				# Search for "keyword" in "title" and "content" column of post (command: ./blog.sh post search "keyword")
 				"search")
 					
 					sqlite3 -column -header blogdata.db "SELECT * FROM post WHERE title LIKE '%$3%' OR content LIKE '%$3%';"
-					echo "";;
+					echo ""
+					;;
 				
 				# If command is not available, display error
 				*)
@@ -232,6 +238,7 @@ else
 					
 			esac
 			;;
+		
 		
 		# Options for ./blog.sh category
 		"category")
@@ -258,7 +265,8 @@ else
 				"list")
 					
 					sqlite3 -column -header blogdata.db "SELECT * FROM category;"
-					echo "";;
+					echo ""
+					;;
 					
 				# Remove category with given id from the database (command: ./blog.sh post remove <cat_id>)
 				"remove")
@@ -272,7 +280,8 @@ else
 						echo "Category with id=$3 deleted successfully"
 					fi
 					
-					echo "";;
+					echo ""
+					;;
 				
 				# Assign catgeory with given <cat_id> to post with given <post_id>
 				"assign")
